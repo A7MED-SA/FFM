@@ -1,0 +1,16 @@
+D:\Project-FFM\Project-FFM\bin\Debug\net8.0-windows\Project-FFM.exe
+D:\Project-FFM\Project-FFM\bin\Debug\net8.0-windows\Project-FFM.deps.json
+D:\Project-FFM\Project-FFM\bin\Debug\net8.0-windows\Project-FFM.runtimeconfig.json
+D:\Project-FFM\Project-FFM\bin\Debug\net8.0-windows\Project-FFM.dll
+D:\Project-FFM\Project-FFM\bin\Debug\net8.0-windows\Project-FFM.pdb
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.csproj.GenerateResource.cache
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.AssemblyInfoInputs.cache
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.AssemblyInfo.cs
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.csproj.CoreCompileInputs.cache
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.dll
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\refint\Project-FFM.dll
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.pdb
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.genruntimeconfig.cache
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\ref\Project-FFM.dll
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project_FFM.AppSystem.Forms.AppForm.resources
