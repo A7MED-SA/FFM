@@ -43,25 +43,13 @@ namespace Project_FFM.AppSystem.Classes
             return filePathD;
         }
 
-        static long GetFolderSize(string folderPath)
+        static public bool IsEnoughSpace(string drivePath, long requiredSpace)
         {
-            long totalSize = 0;
+            // الحصول على معلومات القرص
+            DriveInfo drive = new DriveInfo(drivePath);
 
-            // الحصول على أحجام الملفات داخل المجلد
-            FileInfo[] files = new DirectoryInfo(folderPath).GetFiles();
-            foreach (FileInfo file in files)
-            {
-                totalSize += file.Length;
-            }
-
-            // الحصول على أحجام المجلدات الفرعية
-            DirectoryInfo[] subDirectories = new DirectoryInfo(folderPath).GetDirectories();
-            foreach (DirectoryInfo subDirectory in subDirectories)
-            {
-                totalSize += GetFolderSize(subDirectory.FullName);
-            }
-
-            return totalSize;
+            // التحقق من وجود مساحة كافية
+            return drive.AvailableFreeSpace >= requiredSpace;
         }
     }
 }

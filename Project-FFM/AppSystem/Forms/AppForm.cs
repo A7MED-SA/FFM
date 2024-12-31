@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,35 @@ namespace Project_FFM.AppSystem.Forms
 
     public partial class AppForm : Form
     {
-        static string destinationFolder = "";
-        static string sourceFolder = "";
+        public static string DestinationFolder { get; set; } = "";
+        public static string SourceFolder { get; set; } = "";
+        public static long SourceFolderSize { get; private set; } = 0;
+        public static string[] Files { get; private set; }
+        public static string[] Directories { get; private set; }
+        public static int ShowInfoFlag { get; set; } = 0;
+
         public AppForm()
         {
             InitializeComponent();
         }
+
+        static private void UpdateHorizontalScrollbar()
+        {
+            using (Graphics g = loglist.CreateGraphics())
+            {
+                int maxWidth = 0;
+
+                foreach (var item in loglist.Items)
+                {
+                    int itemWidth = (int)g.MeasureString(item.ToString(), loglist.Font).Width;
+                    if (itemWidth > maxWidth)
+                        maxWidth = itemWidth;
+                }
+
+                loglist.HorizontalExtent = maxWidth;
+            }
+        }
+
 
         private void selectbn_Click(object sender, EventArgs e)
         {
@@ -32,12 +56,12 @@ namespace Project_FFM.AppSystem.Forms
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath))
                 {
-                    sourceFolder = folderBrowser.SelectedPath;
-                    sourcePathtxt.Text = sourceFolder;
+                    SourceFolder = folderBrowser.SelectedPath;
+                    sourcePathtxt.Text = SourceFolder;
                 }
                 else
                 {
-                    sourceFolder = "";
+                    SourceFolder = "";
                     sourcePathtxt.Text = "";
                 }
             }
@@ -54,30 +78,107 @@ namespace Project_FFM.AppSystem.Forms
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath))
                 {
-                    destinationFolder = folderBrowser.SelectedPath;
-                    destinationPathtxt.Text = destinationFolder;
+                    DestinationFolder = folderBrowser.SelectedPath;
+                    destinationPathtxt.Text = DestinationFolder;
                 }
                 else
                 {
-                    destinationFolder = "";
+                    DestinationFolder = "";
                     destinationPathtxt.Text = "";
                 }
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+
+        public static void AddLog(string log)
         {
-            if (sourceFolder == "")
+            if (loglist.InvokeRequired)
+            {
+                loglist.Invoke(new Action(() =>
+                {
+                    loglist.Items.Add(log);
+                    UpdateHorizontalScrollbar();
+                }));
+            }
+            else
+            {
+                loglist.Items.Add(log);
+                UpdateHorizontalScrollbar();
+            }
+        }
+
+        private void showFilesbn_Click(object sender, EventArgs e)
+        {
+            if (SourceFolder == "")
                 MessageBox.Show("Plz select folder");
             else
             {
-                listBox1.Items.Clear();
-                string[] dirs = DirSelection.DirGet(sourceFolder);
-                string[] files = FileSelection.GetFiles(dirs);
-                for(long i=0;i<files.Length;i++)
+                if (DestinationFolder == "")
+                    MessageBox.Show("Plz select folder");
+                else
                 {
-                    listBox1.Items.Add(Path.GetFileName(files[i]));
+                    try
+                    {
+                        long size = 0;
+                        ShowInfoFlag = 1;
+                        fileslist.Items.Clear();
+                        Directories = DirSelection.DirGet(SourceFolder);
+                        Files = FileSelection.GetFiles(Directories);
+                        for (long i = 0; i < Files.Length; i++)
+                        {
+                            FileInfo info = new FileInfo(Files[i]);
+                            size += info.Length;
+                            fileslist.Items.Add(Path.GetFileName(Files[i]));
+                        }
+                        fileslist.Items.Add(size.ToString());
+                        SourceFolderSize = size;
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message); }
                 }
+            }
+        }
+
+        private async void moveFilesbn_Click_1(object sender, EventArgs e)
+        {
+            //if (Files == null || Files.Length == 0)
+            //{
+            //    MessageBox.Show("Please click 'Show Files' first.");
+            //    return;
+            //}
+
+            //if (!DirSelection.IsEnoughSpace(DestinationFolder.Substring(0, 3), SourceFolderSize))
+            //{
+            //    MessageBox.Show("Not enough space in the destination folder.");
+            //    return;
+            //}
+
+            try
+            {
+                for (long j = 0; j < Files.Length; j++)
+                {
+
+                    string extension = Path.GetExtension(Files[j]); //value
+                    string category = FileSelection.GetFileCategory(extension);   //key
+                    string filePath = Files[j];                     //fileSpath
+                    string fileName = Path.GetFileName(filePath);   //filename
+                    string destinationFilePath = FileSelection.GetUniqueFilePath(Path.Combine(DirSelection.CheckDirEx(DestinationFolder, category), fileName));
+
+                    //Console.WriteLine($"{filePath} => {fileName} {extension} {category} => {destinationFilePath}");
+                    //await CopyFileInChunksAsync(sourceFile, destinationFile);
+                    await FileSelection.CopyFileInChunksAsync(fileName,filePath, destinationFilePath);
+                    //FileSelection.CopyFileInChunks(filePath, destinationFilePath);
+                    if (deletechk.Checked)
+                        File.Delete(filePath);
+                }
+                MessageBox.Show("All files moved successfully!");
+
+                //FileSelection.test();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }

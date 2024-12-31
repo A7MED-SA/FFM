@@ -14,3 +14,4 @@ D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.pdb
 D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.genruntimeconfig.cache
 D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\ref\Project-FFM.dll
 D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project_FFM.AppSystem.Forms.AppForm.resources
+D:\Project-FFM\Project-FFM\obj\Debug\net8.0-windows\Project-FFM.sourcelink.json

@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows;
-using Project_FFM; 
+using Project_FFM;
+using Project_FFM.AppSystem.Forms;
 
 namespace Project_FFM.AppSystem.Classes
 {
@@ -103,9 +104,9 @@ namespace Project_FFM.AppSystem.Classes
         //CopyfileInchnks function carries out a file copying from another to another using
         //reading and writing on parts to ensure high performance and managing memory use effectively,
         //especially with large files.
-        static public void CopyFileInChunks(string sourceFilePath, string destinationFilePath)
+        static public async Task CopyFileInChunksAsync(string nameFile, string sourceFilePath, string destinationFilePath)
         {
-            const int bufferSize = 1024 * 1024; // 1 Mb
+            const int bufferSize = 1024 * 1024; // 1 MB
             byte[] buffer = new byte[bufferSize];
 
             using (FileStream sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
@@ -115,15 +116,104 @@ namespace Project_FFM.AppSystem.Classes
                 long totalBytesCopied = 0;
 
                 int bytesRead;
-                while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                while ((bytesRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    destinationStream.Write(buffer, 0, bytesRead);
+                    await destinationStream.WriteAsync(buffer, 0, bytesRead);
                     totalBytesCopied += bytesRead;
 
-                    Console.WriteLine($"تم نقل {totalBytesCopied} من {totalBytes} بايت...");
+                    string progressLog = $"Copying {nameFile}: {totalBytesCopied} / {totalBytes} bytes...";
+                    AppForm.AddLog(progressLog); // تحديث السجل أثناء النسخ
+                    await Task.Delay(50); // منح فرصة لواجهة المستخدم للتحديث
+                }
+            }
+
+            // سجل اسم الملف بعد اكتمال النسخ
+            AppForm.AddLog($"Finished moving {nameFile}");
+        }
+       
+        //static public void CopyFileInChunks(string sourceFilePath, string destinationFilePath)
+        //{
+        //    const int bufferSize = 1024 * 1024; // 1 Mb
+        //    byte[] buffer = new byte[bufferSize];
+
+        //    using (FileStream sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+        //    using (FileStream destinationStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write))
+        //    {
+        //        long totalBytes = sourceStream.Length;
+        //        long totalBytesCopied = 0;
+
+        //        int bytesRead;
+        //        while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+        //        {
+        //            destinationStream.Write(buffer, 0, bytesRead);
+        //            totalBytesCopied += bytesRead;
+
+        //            string log = $"from {totalBytesCopied} to {totalBytes}\n";
+        //            //Console.WriteLine($"تم نقل {totalBytesCopied} من {totalBytes} بايت...");
+        //            AppForm.AddLog(log);
+        //        }
+        //    }
+        //}
+
+        static public void test()
+        {
+            int test1 = 0, test2 = 5;
+            string log = $"from {test1} to {test2}";
+            //Console.WriteLine($"تم نقل {totalBytesCopied} من {totalBytes} بايت...");
+            //AppForm.addLoglist(log);
+            AppForm.AddLog(log);
+        }
+
+
+
+        /*
+         * static void ResumeableFileCopy(string sourceFilePath, string destinationFilePath)
+    {
+        const int bufferSize = 1024 * 1024; // حجم القطعة (1 ميجابايت)
+        byte[] buffer = new byte[bufferSize];
+
+        long sourceFileSize = new FileInfo(sourceFilePath).Length;
+        long destinationFileSize = File.Exists(destinationFilePath) ? new FileInfo(destinationFilePath).Length : 0;
+
+        // تحقق من أن الوجهة ليست أكبر من المصدر
+        if (destinationFileSize > sourceFileSize)
+        {
+            throw new InvalidOperationException("الملف الوجهة أكبر من الملف المصدر. النقل غير ممكن.");
+        }
+
+        using (FileStream sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+        using (FileStream destinationStream = new FileStream(destinationFilePath, FileMode.Append, FileAccess.Write))
+        {
+            sourceStream.Position = destinationFileSize; // ابدأ من حيث توقفت
+            long totalBytesCopied = destinationFileSize;
+
+            Console.WriteLine($"استئناف النقل من {destinationFileSize} بايت من أصل {sourceFileSize} بايت...");
+
+            int bytesRead;
+            while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                destinationStream.Write(buffer, 0, bytesRead);
+                totalBytesCopied += bytesRead;
+
+                // عرض نسبة التقدم
+                Console.WriteLine($"تم نقل {totalBytesCopied} من {sourceFileSize} بايت...");
+
+                // تحقق من الإيقاف المؤقت (يمكن محاكاته هنا)
+                if (CheckForPause())
+                {
+                    Console.WriteLine("تم إيقاف العملية من قبل المستخدم.");
+                    break;
                 }
             }
         }
+    }
+
+    static bool CheckForPause()
+    {
+        // في تطبيق واقعي، يمكن استبدال هذا بفحص فعلي لإشارة إيقاف أو مؤقت.
+        return false; // قم بتغيير القيمة إلى true لمحاكاة الإيقاف.
+    }
+         * */
     }
 
 

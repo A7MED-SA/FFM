@@ -32,8 +32,11 @@
             destinationPathtxt = new TextBox();
             sourcePathbn = new Button();
             destinationPathbn = new Button();
-            listBox1 = new ListBox();
-            button1 = new Button();
+            fileslist = new ListBox();
+            showFilesbn = new Button();
+            moveFilesbn = new Button();
+            deletechk = new CheckBox();
+            loglist = new ListBox();
             SuspendLayout();
             // 
             // sourcePathtxt
@@ -72,32 +75,66 @@
             destinationPathbn.UseVisualStyleBackColor = true;
             destinationPathbn.Click += destinationPathbn_Click;
             // 
-            // listBox1
+            // fileslist
             // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(36, 122);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(176, 199);
-            listBox1.TabIndex = 4;
+            fileslist.FormattingEnabled = true;
+            fileslist.ItemHeight = 15;
+            fileslist.Location = new Point(36, 159);
+            fileslist.Name = "fileslist";
+            fileslist.Size = new Size(176, 199);
+            fileslist.TabIndex = 4;
             // 
-            // button1
+            // showFilesbn
             // 
-            button1.Location = new Point(257, 186);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 5;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            showFilesbn.Location = new Point(224, 298);
+            showFilesbn.Name = "showFilesbn";
+            showFilesbn.Size = new Size(75, 23);
+            showFilesbn.TabIndex = 5;
+            showFilesbn.Text = "Show Files";
+            showFilesbn.UseVisualStyleBackColor = true;
+            showFilesbn.Click += showFilesbn_Click;
+            // 
+            // moveFilesbn
+            // 
+            moveFilesbn.Location = new Point(224, 248);
+            moveFilesbn.Name = "moveFilesbn";
+            moveFilesbn.Size = new Size(75, 23);
+            moveFilesbn.TabIndex = 6;
+            moveFilesbn.Text = "Move Files";
+            moveFilesbn.UseVisualStyleBackColor = true;
+            moveFilesbn.Click += moveFilesbn_Click_1;
+            // 
+            // deletechk
+            // 
+            deletechk.AutoSize = true;
+            deletechk.Location = new Point(382, 26);
+            deletechk.Name = "deletechk";
+            deletechk.Size = new Size(126, 34);
+            deletechk.TabIndex = 8;
+            deletechk.Text = "Delete original files\r\n      (warning)";
+            deletechk.UseVisualStyleBackColor = true;
+            // 
+            // loglist
+            // 
+            loglist.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            loglist.FormattingEnabled = true;
+            loglist.HorizontalScrollbar = true;
+            loglist.ItemHeight = 13;
+            loglist.Location = new Point(308, 159);
+            loglist.Name = "loglist";
+            loglist.Size = new Size(297, 199);
+            loglist.TabIndex = 9;
             // 
             // AppForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(490, 342);
-            Controls.Add(button1);
-            Controls.Add(listBox1);
+            ClientSize = new Size(630, 370);
+            Controls.Add(loglist);
+            Controls.Add(deletechk);
+            Controls.Add(moveFilesbn);
+            Controls.Add(showFilesbn);
+            Controls.Add(fileslist);
             Controls.Add(destinationPathbn);
             Controls.Add(sourcePathbn);
             Controls.Add(destinationPathtxt);
@@ -114,7 +151,10 @@
         private TextBox destinationPathtxt;
         private Button sourcePathbn;
         private Button destinationPathbn;
-        private ListBox listBox1;
-        private Button button1;
+        private Button showFilesbn;
+        private Button moveFilesbn;
+        private ListBox fileslist;
+        private CheckBox deletechk;
+        static public ListBox loglist;
     }
 }
