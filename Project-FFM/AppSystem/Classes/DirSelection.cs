@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Project_FFM.AppSystem.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Project_FFM.AppSystem.Classes
@@ -15,7 +16,6 @@ namespace Project_FFM.AppSystem.Classes
         static public string[] DirGet(string pathS)
         {
             string[] dirs = new string[] { pathS };
-            Console.WriteLine("-------------------------------------");
             for (long i = 0; i < dirs.Length; i++)
             {
                 string[] dirdirs = Directory.GetDirectories(dirs[i]);
@@ -45,11 +45,25 @@ namespace Project_FFM.AppSystem.Classes
 
         static public bool IsEnoughSpace(string drivePath, long requiredSpace)
         {
-            // الحصول على معلومات القرص
             DriveInfo drive = new DriveInfo(drivePath);
 
-            // التحقق من وجود مساحة كافية
             return drive.AvailableFreeSpace >= requiredSpace;
+        }
+
+        static public void DeleteFolder(string sourceFolderPath)
+        {
+            try
+            {
+                if (Directory.GetFiles(sourceFolderPath).Length == 0 && Directory.GetDirectories(sourceFolderPath).Length == 0)
+                {
+                    Directory.Delete(sourceFolderPath);
+                    AppForm.AddLog($"Deleted empty folder: {sourceFolderPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppForm.AddLog($"Error deleting {sourceFolderPath} : {ex.Message}");
+            }
         }
     }
 }

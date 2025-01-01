@@ -55,29 +55,6 @@ namespace Project_FFM.AppSystem.Classes
             return files;
         }
 
-        /*
-        for (long j = 0; j < files.Length; j++)
-                {
-                    try
-                    {
-                        string extension = Path.GetExtension(files[j]); //value
-                        string category = GetFileCategory(extension);   //key
-                        string filePath = files[j];                     //fileSpath
-                        string fileName = Path.GetFileName(filePath);   //filename
-                        string destinationFilePath = GetUniqueFilePath(Path.Combine(DirSelection.CheckDirEx(Program.destinationFolder, category), fileName));
-                       
-                        Console.WriteLine($"{filePath} => {fileName} {extension} {category} => {destinationFilePath}");
-                        CopyFileInChunks(filePath, destinationFilePath);
-                        // حذف الملف المصدر (اختياري)
-                        File.Delete(filePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-
-        */
         //Function aims to generate a unique path of a file inside the destination folder.
         //If there is a file with the same name,
         //the function adds a serial number to the file name until it becomes unique
@@ -101,6 +78,19 @@ namespace Project_FFM.AppSystem.Classes
         }
 
 
+        static public void DeleteFile(string sourceFilePath, string fileName)
+        {
+            try
+            {
+                AppForm.AddLog($"Deleting file: {fileName}");
+                File.Delete(sourceFilePath);
+            }
+            catch (Exception ex)
+            {
+                AppForm.AddLog($"Error deleting {fileName} : {ex.Message}");
+            }
+        }
+
         //CopyfileInchnks function carries out a file copying from another to another using
         //reading and writing on parts to ensure high performance and managing memory use effectively,
         //especially with large files.
@@ -122,12 +112,10 @@ namespace Project_FFM.AppSystem.Classes
                     totalBytesCopied += bytesRead;
 
                     string progressLog = $"Copying {nameFile}: {totalBytesCopied} / {totalBytes} bytes...";
-                    AppForm.AddLog(progressLog); // تحديث السجل أثناء النسخ
-                    await Task.Delay(50); // منح فرصة لواجهة المستخدم للتحديث
+                    AppForm.AddLog(progressLog); 
+                    await Task.Delay(50); 
                 }
             }
-
-            // سجل اسم الملف بعد اكتمال النسخ
             AppForm.AddLog($"Finished moving {nameFile}");
         }
        
@@ -155,17 +143,7 @@ namespace Project_FFM.AppSystem.Classes
         //    }
         //}
 
-        static public void test()
-        {
-            int test1 = 0, test2 = 5;
-            string log = $"from {test1} to {test2}";
-            //Console.WriteLine($"تم نقل {totalBytesCopied} من {totalBytes} بايت...");
-            //AppForm.addLoglist(log);
-            AppForm.AddLog(log);
-        }
-
-
-
+      
         /*
          * static void ResumeableFileCopy(string sourceFilePath, string destinationFilePath)
     {

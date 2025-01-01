@@ -21,6 +21,7 @@ namespace Project_FFM.AppSystem.Forms
         public static string[] Files { get; private set; }
         public static string[] Directories { get; private set; }
         public static int ShowInfoFlag { get; set; } = 0;
+        public static int MoveInfoFlag { get; set; } = 0;
 
         public AppForm()
         {
@@ -40,7 +41,7 @@ namespace Project_FFM.AppSystem.Forms
                         maxWidth = itemWidth;
                 }
 
-                loglist.HorizontalExtent = maxWidth;
+                loglist.HorizontalExtent = maxWidth+15;
             }
         }
 
@@ -50,7 +51,7 @@ namespace Project_FFM.AppSystem.Forms
             using (FolderBrowserDialog folderBrowser = new FolderBrowserDialog())
             {
                 //folderBrowser.Description = "";
-                folderBrowser.ShowNewFolderButton = true; // إظهار خيار إنشاء مجلد جديد
+                folderBrowser.ShowNewFolderButton = true;
 
                 DialogResult result = folderBrowser.ShowDialog();
 
@@ -72,7 +73,7 @@ namespace Project_FFM.AppSystem.Forms
             using (FolderBrowserDialog folderBrowser = new FolderBrowserDialog())
             {
                 //folderBrowser.Description = "";
-                folderBrowser.ShowNewFolderButton = true; // إظهار خيار إنشاء مجلد جديد
+                folderBrowser.ShowNewFolderButton = true;
 
                 DialogResult result = folderBrowser.ShowDialog();
 
@@ -131,8 +132,8 @@ namespace Project_FFM.AppSystem.Forms
                             size += info.Length;
                             fileslist.Items.Add(Path.GetFileName(Files[i]));
                         }
-                        fileslist.Items.Add(size.ToString());
                         SourceFolderSize = size;
+                        sizelbl.Text = $"{SourceFolderSize} bytes";
                     }
                     catch (Exception ex) { MessageBox.Show(ex.Message); }
                 }
@@ -141,40 +142,49 @@ namespace Project_FFM.AppSystem.Forms
 
         private async void moveFilesbn_Click_1(object sender, EventArgs e)
         {
-            //if (Files == null || Files.Length == 0)
-            //{
-            //    MessageBox.Show("Please click 'Show Files' first.");
-            //    return;
-            //}
+            
+            if (MoveInfoFlag == 1)
+            {
+                MessageBox.Show("Alre");
+                return;
+            }
 
-            //if (!DirSelection.IsEnoughSpace(DestinationFolder.Substring(0, 3), SourceFolderSize))
-            //{
-            //    MessageBox.Show("Not enough space in the destination folder.");
-            //    return;
-            //}
+            if (Files == null || Files.Length == 0|| ShowInfoFlag == 0)
+            {
+                MessageBox.Show("Please click 'Show Files' first.");
+                return;
+            }
+
+            if (!DirSelection.IsEnoughSpace(DestinationFolder.Substring(0, 3), SourceFolderSize))
+            {
+                MessageBox.Show("Not enough space in the destination folder.");
+                return;
+            }
 
             try
             {
-                for (long j = 0; j < Files.Length; j++)
+                for (long fileIndex = 0; fileIndex < Files.Length; fileIndex++)
                 {
 
-                    string extension = Path.GetExtension(Files[j]); //value
-                    string category = FileSelection.GetFileCategory(extension);   //key
-                    string filePath = Files[j];                     //fileSpath
-                    string fileName = Path.GetFileName(filePath);   //filename
+                    string extension = Path.GetExtension(Files[fileIndex]); 
+                    string category = FileSelection.GetFileCategory(extension);   
+                    string filePath = Files[fileIndex];                     
+                    string fileName = Path.GetFileName(filePath);   
                     string destinationFilePath = FileSelection.GetUniqueFilePath(Path.Combine(DirSelection.CheckDirEx(DestinationFolder, category), fileName));
 
-                    //Console.WriteLine($"{filePath} => {fileName} {extension} {category} => {destinationFilePath}");
-                    //await CopyFileInChunksAsync(sourceFile, destinationFile);
-                    await FileSelection.CopyFileInChunksAsync(fileName,filePath, destinationFilePath);
-                    //FileSelection.CopyFileInChunks(filePath, destinationFilePath);
+                    await FileSelection.CopyFileInChunksAsync(fileName, filePath, destinationFilePath);
                     if (deletechk.Checked)
-                        File.Delete(filePath);
+                        FileSelection.DeleteFile(filePath,fileName);
                 }
+
+                for(long dirIndex = Directories.Length-1; dirIndex >=0 ;dirIndex--)
+                {
+                    if (deletechk.Checked)
+                        DirSelection.DeleteFolder(Directories[dirIndex]);
+                }
+
                 MessageBox.Show("All files moved successfully!");
-
-                //FileSelection.test();
-
+                MoveInfoFlag = 1;
             }
             catch (Exception ex)
             {
